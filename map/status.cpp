@@ -6093,12 +6093,7 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 #endif
 
 			amotion = status_calc_fix_aspd(bl, sc, amotion);
-			if (pc_isequipped(sd, 35202)) {
-				status->amotion = cap_value(amotion, 2000 - 196 * 10, 2000);
-			}
-			else {
-				status->amotion = cap_value(amotion, pc_maxaspd(sd), 2000);
-			}
+			status->amotion = cap_value(amotion, battle_config.max_aspd, 2000);
 
 #ifdef Pandas_MapFlag_MaxASPD
 			// 根据地图标记重新计算人工生命体的 amotion 动画延迟时间
@@ -6141,7 +6136,12 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 			amotion += sd->bonus.aspd_add;
 #endif
 			amotion = status_calc_fix_aspd(bl, sc, amotion);
-			status->amotion = cap_value(amotion,pc_maxaspd(sd),2000);
+			if (pc_isequipped(sd, 35202)) {
+				status->amotion = cap_value(amotion, 2000 - 196 * 10, 2000);
+			}
+			else {
+				status->amotion = cap_value(amotion, pc_maxaspd(sd), 2000);
+			}
 
 			status->adelay = 2 * status->amotion;
 		} else { // Mercenary and mobs
