@@ -2365,7 +2365,7 @@ enum e_hat_effects : int16{
 	HAT_EF_C_SAMBA_CARNIVAL,
 	HAT_EF_POISON_MASTER,
 	HAT_EF_C_SWIRLING_FLAME,
-	HAT_EF_MAX
+	HAT_EF_MAX=1000
 };
 
 enum e_convertpcinfo_type : uint8 {

@@ -2105,7 +2105,7 @@ int64 battle_addmastery(struct map_session_data *sd,struct block_list *target,in
 	if((skill = pc_checkskill(sd,AL_DEMONBANE)) > 0 &&
 		target->type == BL_MOB && //This bonus doesn't work against players.
 		(battle_check_undead(status->race,status->def_ele) || status->race == RC_DEMON) )
-		damage += (skill*(int)(3+(sd->status.base_level+1)*0.05));	// submitted by orn
+		damage += (skill*(int)(3+(sd->status.base_level+1)*0.1));	// submitted by orn
 	if( (skill = pc_checkskill(sd, RA_RANGERMAIN)) > 0 && (status->race == RC_BRUTE || status->race == RC_PLAYER_DORAM || status->race == RC_PLANT || status->race == RC_FISH) )
 		damage += (skill * 5);
 	if( (skill = pc_checkskill(sd,NC_RESEARCHFE)) > 0 && (status->def_ele == ELE_FIRE || status->def_ele == ELE_EARTH) )
@@ -2173,7 +2173,7 @@ int64 battle_addmastery(struct map_session_data *sd,struct block_list *target,in
 		case W_1HAXE:
 		case W_2HAXE:
 			if((skill = pc_checkskill(sd,AM_AXEMASTERY)) > 0)
-				damage += (skill * 3);
+				damage += (skill * 12);
 			if((skill = pc_checkskill(sd,NC_TRAININGAXE)) > 0)
 				damage += (skill * 5);
 			break;
@@ -2480,8 +2480,8 @@ void battle_consume_ammo(struct map_session_data*sd, int skill, int lv)
 		if (!qty) qty = 1;
 	}
 
-	if (sd->equip_index[EQI_AMMO] >= 0) //Qty check should have been done in skill_check_condition
-		pc_delitem(sd,sd->equip_index[EQI_AMMO],qty,0,1,LOG_TYPE_CONSUME);
+	if (sd->equip_index[EQI_AMMO] >= 0 && !pc_isequipped(sd, 35041) && !pc_isequipped(sd, 35042) && !pc_isequipped(sd, 1750)) //Qty check should have been done in skill_check_condition
+		pc_delitem(sd, sd->equip_index[EQI_AMMO], qty, 0, 1, LOG_TYPE_CONSUME);
 
 	sd->state.arrow_atk = 0;
 }
@@ -4140,7 +4140,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case RG_BACKSTAP:
 			if(sd && sd->status.weapon == W_BOW && battle_config.backstab_bow_penalty)
-				skillratio += (200 + 40 * skill_lv) / 2;
+				skillratio += 200 + 40 * skill_lv;
 			else
 				skillratio += 200 + 40 * skill_lv;
 			break;
@@ -4148,7 +4148,7 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 #ifdef RENEWAL
 			skillratio += -100 + 50 + skill_lv * 150;
 #else
-			skillratio += 40 * skill_lv;
+			skillratio += 140 * skill_lv;
 #endif
 			break;
 		case RG_INTIMIDATE:
@@ -4365,9 +4365,9 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			if (i < 1) i = 1;
 			//Preserve damage ratio when max cart weight is changed.
 			if (sd && sd->cart_weight)
-				skillratio += sd->cart_weight / i * 80000 / battle_config.max_cart_weight - 100;
+				skillratio += sd->cart_weight / i * 120000 / battle_config.max_cart_weight - 100;
 			else if (!sd)
-				skillratio += 80000 / i - 100;
+				skillratio += 120000 / i - 100;
 			break;
 		case TK_DOWNKICK:
 		case TK_STORMKICK:
@@ -6868,6 +6868,11 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 		s_ele = rnd()%ELE_ALL;
 
 	switch(skill_id) {
+		case WZ_WATERBALL:
+			if (src->type == BL_PC && pc_isequipped(sd, 35203))
+				if (status_get_attack_sc_element(src, status_get_sc(src)) != NULL || status_get_attack_sc_element(src, status_get_sc(src)) != 0)
+					s_ele = status_get_attack_sc_element(src, status_get_sc(src));
+			break;
 		case NPC_EARTHQUAKE:
 			s_ele = ELE_NEUTRAL;
 			break;
@@ -7111,7 +7116,7 @@ struct Damage battle_calc_magic_attack(struct block_list *src,struct block_list 
 						skillratio += 10 * skill_lv;
 						break;
 					case AL_HOLYLIGHT:
-						skillratio += 25;
+						skillratio += 900;
 						if (sd && sd->sc.data[SC_SPIRIT] && sd->sc.data[SC_SPIRIT]->val2 == SL_PRIEST)
 							skillratio *= 5; //Does 5x damage include bonuses from other skills?
 						break;

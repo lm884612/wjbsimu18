@@ -629,12 +629,12 @@ char storage_guild_storageopen(struct map_session_data* sd)
 	else if (sd->state.storage_flag)
 		return GSTORAGE_STORAGE_ALREADY_OPEN; // Can't open both storages at a time.
 
-#if PACKETVER >= 20140205
+/*#if PACKETVER >= 20140205
 	int pos;
 
 	if ((pos = guild_getposition(sd)) < 0 || !(sd->guild->position[pos].mode&GUILD_PERM_STORAGE))
 		return GSTORAGE_NO_PERMISSION; // Guild member doesn't have permission
-#endif
+#endif*/
 
 	if( !pc_can_give_items(sd) ) { //check is this GM level can open guild storage and store items [Lupus]
 		clif_displaymessage(sd->fd, msg_txt(sd,246));

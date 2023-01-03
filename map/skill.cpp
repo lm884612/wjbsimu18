@@ -1435,7 +1435,7 @@ int skill_additional_effect(struct block_list* src, struct block_list *bl, uint1
 					// Gank
 					if(dstmd && sd->status.weapon != W_BOW &&
 						(skill=pc_checkskill(sd,RG_SNATCHER)) > 0 &&
-						(skill*15 + 55) + pc_checkskill(sd,TF_STEAL)*10 > rnd()%1000) {
+						50 > rnd() % 1000) {
 						if(pc_steal_item(sd,bl,pc_checkskill(sd,TF_STEAL)))
 							clif_skill_nodamage(src,bl,TF_STEAL,skill,1);
 						else
@@ -4715,6 +4715,7 @@ static TIMER_FUNC(skill_timerskill){
 	struct skill_timerskill *skl;
 	struct skill_unit *unit = NULL;
 	int range;
+	struct map_session_data* sd = BL_CAST(BL_PC, src);
 
 	nullpo_ret(src);
 	nullpo_ret(ud);
@@ -4812,6 +4813,13 @@ static TIMER_FUNC(skill_timerskill){
 						int ux = skl->x + layout->dx[i];
 						int uy = skl->y + layout->dy[i];
 						unit = map_find_skill_unit_oncell(src, ux, uy, WZ_WATERBALL, NULL, 0);
+						if (src->type == BL_PC && pc_isequipped(sd, 35203) && unit && !status_isdead(target) && !status_isdead(src)) {
+							skill_delunit(unit); // Consume unit for next waterball
+							//Timer will continue and walkdelay set until target is dead, even if there is currently no line of sight
+							unit_set_walkdelay(src, tick, TIMERSKILL_INTERVAL, 1);
+							skill_addtimerskill(src, tick + TIMERSKILL_INTERVAL, target->id, skl->x, skl->y, skl->skill_id, skl->skill_lv, skl->type + 1, skl->flag);
+							break;
+						}
 						if (unit)
 							break;
 					}
@@ -5420,6 +5428,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 	case ABR_BATTLE_BUSTER:
 	case ABR_DUAL_CANNON_FIRE:
 	case ABR_INFINITY_BUSTER:
+	case RG_BACKSTAP:
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag);
 		break;
 
@@ -5612,7 +5621,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 		status_change_end(src, SC_BLADESTOP);
 		break;
 
-	case RG_BACKSTAP:
+	/*case RG_BACKSTAP:
 		{
 			if (!check_distance_bl(src, bl, 0)) {
 #ifdef RENEWAL
@@ -5651,7 +5660,7 @@ int skill_castend_damage_id (struct block_list* src, struct block_list *bl, uint
 					clif_skill_fail(sd,skill_id,USESKILL_FAIL_LEVEL,0);
 			}
 		}
-		break;
+		break;*/
 
 	case MO_FINGEROFFENSIVE:
 		skill_attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag);
@@ -12863,7 +12872,7 @@ static int8 skill_castend_id_check(struct block_list *src, struct block_list *ta
 			if (tsc && tsc->option&OPTION_MADOGEAR)
 				return USESKILL_FAIL_TOTARGET;
 			break;
-		case RG_BACKSTAP:
+		/*case RG_BACKSTAP:
 			{
 #ifndef RENEWAL
 				uint8 dir = map_calc_dir(src,target->x,target->y), t_dir = unit_getdir(target);
@@ -12882,7 +12891,7 @@ static int8 skill_castend_id_check(struct block_list *src, struct block_list *ta
 				if (!battle_check_undead(tstatus->race, tstatus->def_ele))
 					return USESKILL_FAIL_MAX;
 			}
-			break;
+			break;*/
 		case PR_LEXDIVINA:
 		case MER_LEXDIVINA:
 			{
@@ -15189,7 +15198,9 @@ std::shared_ptr<s_skill_unit_group> skill_unitsetting(struct block_list *src, ui
 				break;
 			case WZ_WATERBALL:
 				//Check if there are cells that can be turned into waterball units
-				if (!sd || map_getcell(src->m, ux, uy, CELL_CHKWATER) 
+				if (src->type == BL_PC && pc_isequipped(sd, 35203))
+					break;
+				if (!sd || map_getcell(src->m, ux, uy, CELL_CHKWATER)
 					|| (map_find_skill_unit_oncell(src, ux, uy, SA_DELUGE, NULL, 1)) != NULL || (map_find_skill_unit_oncell(src, ux, uy, NJ_SUITON, NULL, 1)) != NULL)
 					break; //Turn water, deluge or suiton into waterball cell
 				continue;

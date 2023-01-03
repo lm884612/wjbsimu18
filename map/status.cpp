@@ -6093,7 +6093,12 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 #endif
 
 			amotion = status_calc_fix_aspd(bl, sc, amotion);
-			status->amotion = cap_value(amotion, battle_config.max_aspd, 2000);
+			if (pc_isequipped(sd, 35202)) {
+				status->amotion = cap_value(amotion, 2000 - 196 * 10, 2000);
+			}
+			else {
+				status->amotion = cap_value(amotion, pc_maxaspd(sd), 2000);
+			}
 
 #ifdef Pandas_MapFlag_MaxASPD
 			// 根据地图标记重新计算人工生命体的 amotion 动画延迟时间
@@ -8209,7 +8214,7 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 
 		// GetMoveSlowValue()
 		if( sd && sc->data[SC_HIDING] && pc_checkskill(sd,RG_TUNNELDRIVE) > 0 )
-			val = 120 - 6 * pc_checkskill(sd,RG_TUNNELDRIVE);
+			val = 120 - 24 * pc_checkskill(sd,RG_TUNNELDRIVE);
 		else if( sd && sc->data[SC_CHASEWALK] && sc->data[SC_CHASEWALK]->val3 < 0 )
 			val = sc->data[SC_CHASEWALK]->val3;
 		else {
@@ -10999,7 +11004,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val3 = 5 * val1; // Matk% increase
 #else
 			val2 = 1; // Lasts 1 invocation
-			val3 = 10 * val1; // Matk% increase
+			val3 = 5 * val1; // Matk% increase
 			val4 = 0; // 0 = ready to be used, 1 = activated and running
 #endif
 			break;
@@ -11678,7 +11683,7 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = 5*val1; // def increase
 			break;
 		case SC_IMPOSITIO:
-			val2 = 5*val1; // WATK/MATK increase
+			val2 = 10*val1; // WATK/MATK increase
 			break;
 		case SC_MELTDOWN:
 			val2 = 100*val1; // Chance to break weapon
