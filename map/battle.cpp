@@ -3253,6 +3253,11 @@ int battle_get_weapon_element(struct Damage* wd, struct block_list *src, struct 
 		element = rnd()%ELE_ALL;
 
 	switch( skill_id ) {
+		case PA_SHIELDCHAIN:
+			if (src->type == BL_PC && pc_isequipped(sd, 35217)) {
+				element = sstatus->rhw.ele;
+				break;
+			}
 		case GS_GROUNDDRIFT:
 			element = wd->miscflag; //element comes in flag.
 			break;
@@ -4204,6 +4209,12 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 #endif
 			break;
 		case MO_EXTREMITYFIST:
+			if (src->type==BL_PC && pc_isequipped(sd, 35210)) {
+				if (25 > rnd() % 100) {
+					skillratio += 200 * (7 + sstatus->sp / 10);
+					break;
+				}
+			}
 			skillratio += 100 * (7 + sstatus->sp / 10);			
 #ifdef RENEWAL
 			if (wd->miscflag&1)

@@ -10977,6 +10977,8 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 					tick += 30000; // Base of 30 seconds
 					tick += poison_level * 15 * 1000; // Additional 15 seconds per level
 				}
+				else if(src->type==BL_PC && pc_isequipped(sd, 35212))
+					tick = 600000;
 			}
 			break;
 		case SC_POISONREACT:
