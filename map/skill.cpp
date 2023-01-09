@@ -4339,7 +4339,7 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			case MG_FIREBOLT:
 			case MG_LIGHTNINGBOLT:
 				if (sc && sc->data[SC_DOUBLECAST] && src->type == BL_PC && pc_isequipped(sd, 35211)) {
-					if (rnd() % 100 < 10) {
+					if (rnd() % 100 < 15) {
 						//skill_addtimerskill(src, tick + dmg.div_*dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag|2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
@@ -4347,14 +4347,14 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
 						break;
 					}
-					if (rnd() % 100 < 20) {
+					if (rnd() % 100 < 35) {
 						//skill_addtimerskill(src, tick + dmg.div_*dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag|2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
 						break;
 					}
-					if (rnd() % 100 < 70) {
+					if (rnd() % 100 < 50) {
 						//skill_addtimerskill(src, tick + dmg.div_*dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag|2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
 						skill_addtimerskill(src, tick + dmg.amotion, bl->id, 0, 0, skill_id, skill_lv, BF_MAGIC, flag | 2);
