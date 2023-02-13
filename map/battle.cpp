@@ -2480,7 +2480,7 @@ void battle_consume_ammo(struct map_session_data*sd, int skill, int lv)
 		if (!qty) qty = 1;
 	}
 
-	if (sd->equip_index[EQI_AMMO] >= 0 && !pc_isequipped(sd, 35041) && !pc_isequipped(sd, 35042) && !pc_isequipped(sd, 1750)) //Qty check should have been done in skill_check_condition
+	if (sd->equip_index[EQI_AMMO] >= 0 && !pc_isequipped(sd, 35041) && !pc_isequipped(sd, 35042) && !pc_isequipped(sd, 1750) && !pc_isequipped(sd, 35241) && !pc_isequipped(sd, 35242) && !pc_isequipped(sd, 35243)) //Qty check should have been done in skill_check_condition
 		pc_delitem(sd, sd->equip_index[EQI_AMMO], qty, 0, 1, LOG_TYPE_CONSUME);
 
 	sd->state.arrow_atk = 0;
