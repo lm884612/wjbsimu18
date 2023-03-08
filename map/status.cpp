@@ -6137,7 +6137,12 @@ void status_calc_bl_main(struct block_list *bl, std::bitset<SCB_MAX> flag)
 #endif
 			amotion = status_calc_fix_aspd(bl, sc, amotion);
 			if (pc_isequipped(sd, 35202)) {
-				status->amotion = cap_value(amotion, 2000 - 196 * 10, 2000);
+				if (map_flag_gvg(bl->m)) {
+					status->amotion = cap_value(amotion, pc_maxaspd(sd), 2000);
+				}
+				else {
+					status->amotion = cap_value(amotion, 2000 - 196 * 10, 2000);
+				}
 			}
 			else {
 				status->amotion = cap_value(amotion, pc_maxaspd(sd), 2000);
@@ -9944,7 +9949,7 @@ t_tick status_get_sc_def(struct block_list *src, struct block_list *bl, enum sc_
 			break;
 		case SC_ANKLE:
 			if(status_has_mode(status,MD_STATUSIMMUNE)) // Lasts 5 times less on bosses
-				tick /= 5;
+				tick += 5000;
 			sc_def = status->agi*50;
 			break;
 		case SC_JOINTBEAT:

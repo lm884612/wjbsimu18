@@ -2471,7 +2471,7 @@ int skill_onskillusage(struct map_session_data *sd, struct block_list *bl, uint1
 		return 0;
 
 	for (auto &it : sd->autospell3) {
-		if (it.trigger_skill == skill_id)
+		if (it.trigger_skill != skill_id)
 			continue;
 
 		if (it.lock)
@@ -15192,6 +15192,8 @@ std::shared_ptr<s_skill_unit_group> skill_unitsetting(struct block_list *src, ui
 			case HT_LANDMINE:
 			case MA_LANDMINE:
 			case HT_ANKLESNARE:
+				unit_val1 = 40000;
+				break;
 			case HT_SHOCKWAVE:
 			case HT_SANDMAN:
 			case MA_SANDMAN:

@@ -4210,6 +4210,10 @@ static int battle_calc_attack_skill_ratio(struct Damage* wd, struct block_list *
 			break;
 		case MO_EXTREMITYFIST:
 			if (src->type==BL_PC && pc_isequipped(sd, 35210)) {
+				if (10 > rnd() % 100) {
+					skillratio += 300 * (7 + sstatus->sp / 10);
+					break;
+				}
 				if (25 > rnd() % 100) {
 					skillratio += 200 * (7 + sstatus->sp / 10);
 					break;
